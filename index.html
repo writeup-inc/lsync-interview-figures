@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lシンク インタビュー｜挿入図</title>
+<meta name="description" content="Lシンクのインタビュー収録で、各ブロックの途中に表示する図。全6枚。">
+<style>
+  :root{
+    --bg:#ffffff;
+    --panel:#ffffff;
+    --fg:#111418;
+    --sub:#5b636c;
+    --faint:#78828c;
+    --hair:#e3e7eb;
+
+    --g:#06c755;            /* LINE green */
+    --g-ink:#04653a;
+    --g-tint:#e8faf0;
+    --g-chip-ink:#053a1e;
+
+    --n-tint:#f3f5f7;
+    --n-line:#c2cad2;
+    --n-ink:#4a525b;
+
+    --shadow:0 1px 2px rgba(16,24,32,.06), 0 10px 28px rgba(16,24,32,.07);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#0d1013; --panel:#14181c; --fg:#f2f5f7; --sub:#a8b1ba; --faint:#7d8791; --hair:#252b31;
+      --g:#22d96c; --g-ink:#86f2b3; --g-tint:#0f2c1c; --g-chip-ink:#04240f;
+      --n-tint:#1b2026; --n-line:#3c454e; --n-ink:#b3bcc5;
+      --shadow:0 1px 2px rgba(0,0,0,.45), 0 10px 30px rgba(0,0,0,.4);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#0d1013; --panel:#14181c; --fg:#f2f5f7; --sub:#a8b1ba; --faint:#7d8791; --hair:#252b31;
+    --g:#22d96c; --g-ink:#86f2b3; --g-tint:#0f2c1c; --g-chip-ink:#04240f;
+    --n-tint:#1b2026; --n-line:#3c454e; --n-ink:#b3bcc5;
+    --shadow:0 1px 2px rgba(0,0,0,.45), 0 10px 30px rgba(0,0,0,.4);
+  }
+
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;overflow-x:hidden}
+  body{
+    background:var(--bg);
+    color:var(--fg);
+    font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic Medium","Yu Gothic","Noto Sans JP","Meiryo",system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh; min-height:100svh;
+    display:flex; flex-direction:column;
+  }
+
+  .deck{flex:1;display:flex;align-items:center;justify-content:center;padding:26px 22px 6px}
+  .slide{display:none;width:100%;max-width:1080px}
+  .slide.is-on{display:block;animation:fade .26s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+  .chip{
+    display:inline-block;background:var(--g);color:var(--g-chip-ink);
+    padding:5px 12px;border-radius:999px;font-size:13px;font-weight:800;letter-spacing:.02em;
+  }
+  .kicker{display:block;margin-top:9px;font-size:14px;font-weight:700;color:var(--faint);letter-spacing:.02em}
+
+  h2.title{
+    margin:14px 0 20px;
+    font-size:clamp(23px,3.3vw,40px);
+    line-height:1.34;letter-spacing:.01em;font-weight:800;
+  }
+
+  .fig{
+    background:var(--panel);
+    border:1px solid var(--hair);
+    border-radius:18px;
+    padding:24px 22px;
+    box-shadow:var(--shadow);
+  }
+
+  /* ---------- lane ---------- */
+  .lane{display:grid;grid-template-columns:128px 1fr;gap:18px;align-items:center}
+  .lane + .lane{margin-top:14px;padding-top:22px;border-top:1px solid var(--hair)}
+
+  .tag{
+    border-radius:12px;padding:12px 8px;text-align:center;
+    background:var(--n-tint);border:2px solid var(--n-line);
+  }
+  .tag b{display:block;font-size:clamp(15px,1.6vw,19px);font-weight:800;color:var(--n-ink);line-height:1.35}
+  .tag span{display:block;margin-top:3px;font-size:clamp(13px,1.3vw,16px);font-weight:700;color:var(--faint)}
+  .lane--g .tag{background:var(--g-tint);border-color:var(--g)}
+  .lane--g .tag b{color:var(--g-ink)}
+  .lane--g .tag span{color:var(--g-ink)}
+
+  .flow{display:flex;align-items:center}
+  .node{
+    flex:1 1 0;min-width:0;
+    border-radius:12px;padding:18px 10px;text-align:center;
+    background:var(--n-tint);border:2px solid var(--n-line);
+  }
+  .node b{display:block;font-size:clamp(16px,1.95vw,26px);font-weight:800;color:var(--n-ink);line-height:1.35}
+  .node span{display:block;margin-top:4px;font-size:clamp(13px,1.35vw,17px);font-weight:700;color:var(--faint)}
+  .lane--g .node{background:var(--g-tint);border-color:var(--g)}
+  .lane--g .node b{color:var(--fg)}
+  .lane--g .node span{color:var(--g-ink)}
+
+  .arw{
+    flex:0 0 auto;position:relative;align-self:stretch;min-height:56px;min-width:62px;
+    display:flex;align-items:center;justify-content:center;padding:0 9px;
+  }
+  .arw::before{content:"";position:absolute;left:7px;right:15px;top:50%;height:2.5px;background:var(--n-line);transform:translateY(-50%)}
+  .arw::after{content:"";position:absolute;right:4px;top:50%;transform:translateY(-50%);
+    border-left:11px solid var(--n-line);border-top:7px solid transparent;border-bottom:7px solid transparent}
+  .arw i{
+    position:relative;transform:translateY(-16px);
+    font-style:normal;font-size:clamp(13px,1.25vw,17px);font-weight:700;color:var(--faint);
+    white-space:nowrap;
+  }
+  .lane--g .arw::before{background:var(--g)}
+  .lane--g .arw::after{border-left-color:var(--g)}
+
+  @media (max-width:820px){
+    .lane{grid-template-columns:1fr;gap:12px}
+    .tag{display:flex;gap:10px;align-items:baseline;justify-content:center;padding:9px 12px}
+    .tag span{margin-top:0}
+    .flow{flex-direction:column;align-items:stretch}
+    .node{flex:none;padding:14px 10px}
+    .arw{flex:none;align-self:auto;width:100%;height:58px;min-height:58px;padding:0;justify-content:flex-start}
+    .arw::before{left:50%;right:auto;top:6px;bottom:18px;height:auto;width:2.5px;transform:translateX(-50%)}
+    .arw::after{right:auto;left:50%;top:auto;bottom:2px;transform:translateX(-50%);
+      border-left:7px solid transparent;border-right:7px solid transparent;
+      border-top:11px solid var(--n-line);border-bottom:none}
+    .lane--g .arw::after{border-top-color:var(--g);border-left-color:transparent}
+    .arw i{transform:none;margin-left:calc(50% + 16px)}
+  }
+
+  /* ---------- 図4 専用 ---------- */
+  .people{display:grid;grid-template-columns:1.35fr 1fr;gap:20px;align-items:center}
+  @media (max-width:820px){.people{grid-template-columns:1fr;gap:14px}}
+  .people h3{margin:0 0 10px;font-size:clamp(14px,1.4vw,19px);font-weight:700;color:var(--sub)}
+  .people svg{display:block;width:100%;height:auto}
+  .legend{display:flex;gap:18px;margin-top:10px;flex-wrap:wrap}
+  .legend b{font-size:clamp(14px,1.4vw,18px);font-weight:800}
+  .legend .on{color:var(--g-ink)}
+  .legend .off{color:var(--sub)}
+  .stat{font-size:clamp(20px,2.9vw,36px);font-weight:800;line-height:1.4}
+  .stat em{font-style:normal;color:var(--g-ink)}
+  .split{margin-top:20px;padding-top:20px;border-top:1px solid var(--hair)}
+
+  /* ---------- 図6 専用 ---------- */
+  .steps .node{padding:22px 10px}
+  .steps .node span{margin-top:0;margin-bottom:6px;order:-1}
+  .steps .node{display:flex;flex-direction:column;justify-content:center}
+  .steps .node b{font-size:clamp(19px,2.6vw,34px)}
+  .tail{margin:14px 0 0;font-size:clamp(14px,1.5vw,19px);font-weight:700;color:var(--sub)}
+
+  /* ---------- footer of slide ---------- */
+  .concl{
+    margin:20px 0 0;padding-left:16px;border-left:5px solid var(--g);
+    font-size:clamp(16px,2vw,23px);font-weight:800;line-height:1.5;
+  }
+  .note{margin:11px 0 0;padding-left:21px;font-size:14px;line-height:1.65;color:var(--faint)}
+
+  /* ---------- nav ---------- */
+  .bar{
+    position:sticky;bottom:0;display:flex;align-items:center;justify-content:center;gap:8px;
+    padding:12px 16px 16px;background:linear-gradient(to top,var(--bg) 62%,transparent);
+  }
+  .bar button{
+    font:inherit;font-size:14px;font-weight:700;color:var(--fg);background:var(--panel);
+    border:1px solid var(--hair);border-radius:10px;padding:10px 14px;cursor:pointer;min-height:44px;white-space:nowrap;
+  }
+  .bar button:hover{border-color:var(--g)}
+  .bar button:disabled{opacity:.35;cursor:default;border-color:var(--hair)}
+  .count{font-size:14px;font-weight:800;color:var(--sub);min-width:88px;text-align:center;font-variant-numeric:tabular-nums}
+  .dots{display:flex;gap:7px}
+  .dots i{width:10px;height:10px;border-radius:50%;background:var(--n-line);cursor:pointer;display:block}
+  .dots i.on{background:var(--g)}
+  .spacer{flex:0 1 34px}
+  @media (max-width:640px){
+    .deck{padding:18px 14px 4px}
+    .fig{padding:16px 13px;border-radius:14px}
+    .dots{display:none}
+    .count{min-width:70px}
+    .bar{gap:6px;padding:10px 10px 14px}
+    .bar button{padding:10px 11px}
+    .spacer{flex:0 1 10px}
+  }
+</style>
+</head>
+<body>
+
+<main class="deck">
+
+  <!-- ============ 1 ============ -->
+  <section class="slide is-on">
+    <span class="chip">ブロック① 0:00–3:00</span>
+    <span class="kicker">深夜3時に、Lシンクから予約が入っていた</span>
+    <h2 class="title">はじめの一手が、<br>いつも人だった</h2>
+
+    <div class="fig">
+      <div class="lane lane--n">
+        <div class="tag"><b>これまで</b><span>人が返す</span></div>
+        <div class="flow">
+          <div class="node"><b>深夜に問合せ</b></div>
+          <div class="arw"><i>止まる</i></div>
+          <div class="node"><b>人は寝ている</b></div>
+          <div class="arw"><i>待たせる</i></div>
+          <div class="node"><b>翌朝に返信</b></div>
+        </div>
+      </div>
+      <div class="lane lane--g">
+        <div class="tag"><b>Lシンク</b><span>AIが返す</span></div>
+        <div class="flow">
+          <div class="node"><b>深夜に問合せ</b></div>
+          <div class="arw"><i>生成する</i></div>
+          <div class="node"><b>その場で回答</b></div>
+          <div class="arw"><i>打診する</i></div>
+          <div class="node"><b>3時に予約</b></div>
+        </div>
+      </div>
+    </div>
+
+    <p class="concl">人が動いた時点で、<br>その仕組みは負け</p>
+  </section>
+
+  <!-- ============ 2 ============ -->
+  <section class="slide">
+    <span class="chip">ブロック② 3:00–7:00</span>
+    <span class="kicker">肝は、タグ別の配信</span>
+    <h2 class="title">タグを、人がつけない</h2>
+
+    <div class="fig">
+      <div class="lane lane--n">
+        <div class="tag"><b>他ツール</b><span>人が選ぶ</span></div>
+        <div class="flow">
+          <div class="node"><b>管理画面を開く</b></div>
+          <div class="arw"><i>一人ずつ読む</i></div>
+          <div class="node"><b>手でタグ付け</b></div>
+          <div class="arw"><i>増える</i></div>
+          <div class="node"><b>数千人で限界</b></div>
+        </div>
+      </div>
+      <div class="lane lane--g">
+        <div class="tag"><b>Lシンク</b><span>勝手につく</span></div>
+        <div class="flow">
+          <div class="node"><b>雑談する</b></div>
+          <div class="arw"><i>会話から</i></div>
+          <div class="node"><b>自動でタグ</b></div>
+          <div class="arw"><i>溜まる</i></div>
+          <div class="node"><b>顧客のカルテ</b></div>
+        </div>
+      </div>
+    </div>
+
+    <p class="concl">人がつけないから、<br>人数が増えても止まらない</p>
+    <p class="note">タグの例：「子育て中」「経営者」「10代・20代」。登録・アンケート・数回のやり取りの中でついていきます。</p>
+  </section>
+
+  <!-- ============ 3 ============ -->
+  <section class="slide">
+    <span class="chip">ブロック② 3:00–7:00</span>
+    <span class="kicker">選挙のたとえ</span>
+    <h2 class="title">順番を逆にすると、<br>票が逃げる</h2>
+
+    <div class="fig">
+      <div class="lane lane--n">
+        <div class="tag"><b>逆の順番</b><span>票が逃げる</span></div>
+        <div class="flow">
+          <div class="node"><b>いきなり公約</b></div>
+          <div class="arw"><i>ずれる</i></div>
+          <div class="node"><b>自分向けでない</b></div>
+          <div class="arw"><i>切られる</i></div>
+          <div class="node"><b>他の候補へ</b></div>
+        </div>
+      </div>
+      <div class="lane lane--g">
+        <div class="tag"><b>正しい順番</b><span>読まれる</span></div>
+        <div class="flow">
+          <div class="node"><b>アンケート</b></div>
+          <div class="arw"><i>聞く</i></div>
+          <div class="node"><b>声を取りまとめ</b></div>
+          <div class="arw"><i>1週間後</i></div>
+          <div class="node"><b>同じ公約</b></div>
+        </div>
+      </div>
+    </div>
+
+    <p class="concl">文章は同じ。<br>変えたのは順番だけ</p>
+    <p class="note">特定の政党・候補者を指すものではありません。相手に合う話題を先に置く、という順番の例です。</p>
+  </section>
+
+  <!-- ============ 4 ============ -->
+  <section class="slide">
+    <span class="chip">ブロック③ 7:00–9:00</span>
+    <span class="kicker">誰も公式LINEに話しかけない</span>
+    <h2 class="title">登録しても、<br>9割は黙っている</h2>
+
+    <div class="fig">
+      <div class="people">
+        <div>
+          <h3>公式LINEに登録した10人</h3>
+          <svg viewBox="0 0 738 120" role="img" aria-label="10人のうち緑色の1人だけが自分から質問し、残る9人は黙っていることを示す図">
+            <g>
+              <circle cx="35" cy="59" r="33" fill="var(--g-tint)" stroke="var(--g)" stroke-width="3"/>
+              <circle cx="35" cy="49" r="11" fill="var(--g)"/>
+              <path d="M17 79 a18 15 0 0 1 36 0" fill="var(--g)"/>
+            </g>
+            <g fill="var(--n-tint)" stroke="var(--n-line)" stroke-width="2.5">
+              <circle cx="109" cy="59" r="33"/><circle cx="183" cy="59" r="33"/><circle cx="257" cy="59" r="33"/>
+              <circle cx="331" cy="59" r="33"/><circle cx="405" cy="59" r="33"/><circle cx="479" cy="59" r="33"/>
+              <circle cx="553" cy="59" r="33"/><circle cx="627" cy="59" r="33"/><circle cx="701" cy="59" r="33"/>
+            </g>
+            <g fill="var(--n-line)">
+              <circle cx="109" cy="49" r="11"/><circle cx="183" cy="49" r="11"/><circle cx="257" cy="49" r="11"/>
+              <circle cx="331" cy="49" r="11"/><circle cx="405" cy="49" r="11"/><circle cx="479" cy="49" r="11"/>
+              <circle cx="553" cy="49" r="11"/><circle cx="627" cy="49" r="11"/><circle cx="701" cy="49" r="11"/>
+              <path d="M91 79 a18 15 0 0 1 36 0"/><path d="M165 79 a18 15 0 0 1 36 0"/><path d="M239 79 a18 15 0 0 1 36 0"/>
+              <path d="M313 79 a18 15 0 0 1 36 0"/><path d="M387 79 a18 15 0 0 1 36 0"/><path d="M461 79 a18 15 0 0 1 36 0"/>
+              <path d="M535 79 a18 15 0 0 1 36 0"/><path d="M609 79 a18 15 0 0 1 36 0"/><path d="M683 79 a18 15 0 0 1 36 0"/>
+            </g>
+          </svg>
+          <div class="legend">
+            <b class="on">■ 1人 自分から聞く</b>
+            <b class="off">■ 9人 黙っている</b>
+          </div>
+        </div>
+        <p class="stat">自分から聞いてくるのは<br><em>10人に1人</em></p>
+      </div>
+
+      <div class="split">
+        <div class="lane lane--g" style="grid-template-columns:1fr">
+          <div class="flow">
+            <div class="node" style="background:var(--n-tint);border-color:var(--n-line)">
+              <b style="color:var(--n-ink)">待って返す設計</b><span>9割に届かない</span>
+            </div>
+            <div class="arw"><i>タグで見分ける</i></div>
+            <div class="node"><b>こちらから声をかける</b><span>その人に効く一言で</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p class="concl">一番の売りの機能も、<br>待っている限りは空振りする</p>
+    <p class="note">「10人に1人」は自社での実感値です。</p>
+  </section>
+
+  <!-- ============ 5 ============ -->
+  <section class="slide">
+    <span class="chip">ブロック④ 9:00–11:00</span>
+    <span class="kicker">MCPに対応しました</span>
+    <h2 class="title">設定画面と格闘する<br>時間をなくす</h2>
+
+    <div class="fig">
+      <div class="lane lane--n">
+        <div class="tag"><b>これまで</b><span>人が設定</span></div>
+        <div class="flow">
+          <div class="node"><b>管理画面を開く</b></div>
+          <div class="arw"><i>覚える</i></div>
+          <div class="node"><b>タグを設計</b></div>
+          <div class="arw"><i>組み立てる</i></div>
+          <div class="node"><b>ステップ配信</b></div>
+        </div>
+      </div>
+      <div class="lane lane--g">
+        <div class="tag"><b>MCP対応</b><span>伝えるだけ</span></div>
+        <div class="flow">
+          <div class="node" style="flex:2 1 0"><b>Claudeに伝える</b></div>
+          <div class="arw"><i>構築が進む</i></div>
+          <div class="node"><b>そのまま運用</b></div>
+        </div>
+      </div>
+    </div>
+
+    <p class="concl">これも同じ話で、<br>はじめの一手を人にやらせない</p>
+  </section>
+
+  <!-- ============ 6 ============ -->
+  <section class="slide">
+    <span class="chip">ブロック④ 締め</span>
+    <span class="kicker">まず、何をすればいいか</span>
+    <h2 class="title">5分だけ雑談して、<br>ついたタグを見る</h2>
+
+    <div class="fig">
+      <div class="lane lane--g steps" style="grid-template-columns:1fr">
+        <div class="flow">
+          <div class="node"><b>QRを読む</b><span>STEP 1</span></div>
+          <div class="arw"><i>登録</i></div>
+          <div class="node"><b>5分だけ雑談</b><span>STEP 2</span></div>
+          <div class="arw"><i>自動で</i></div>
+          <div class="node"><b>タグを見る</b><span>STEP 3</span></div>
+        </div>
+      </div>
+      <p class="tail">返信の速さは、見なくていい</p>
+    </div>
+
+    <p class="concl">思っているより言い当てられている。<br>その気持ち悪さが、効くということ</p>
+  </section>
+
+</main>
+
+<nav class="bar">
+  <button id="prev" type="button" aria-label="前の図">‹ 前</button>
+  <span class="count"><b id="cur">1</b> / 6</span>
+  <button id="next" type="button" aria-label="次の図">次 ›</button>
+  <span class="spacer"></span>
+  <div class="dots" id="dots" aria-hidden="true"></div>
+  <span class="spacer"></span>
+  <button id="theme" type="button">表示切替</button>
+</nav>
+
+<script>
+(function(){
+  var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var i = 0;
+  var cur = document.getElementById('cur');
+  var prev = document.getElementById('prev');
+  var next = document.getElementById('next');
+  var dots = document.getElementById('dots');
+
+  slides.forEach(function(_, n){
+    var d = document.createElement('i');
+    d.addEventListener('click', function(){ go(n); });
+    dots.appendChild(d);
+  });
+  var dotEls = Array.prototype.slice.call(dots.children);
+
+  function go(n){
+    i = Math.max(0, Math.min(slides.length - 1, n));
+    slides.forEach(function(s, k){ s.classList.toggle('is-on', k === i); });
+    dotEls.forEach(function(d, k){ d.classList.toggle('on', k === i); });
+    cur.textContent = i + 1;
+    prev.disabled = (i === 0);
+    next.disabled = (i === slides.length - 1);
+    if (location.hash !== '#' + (i + 1)) history.replaceState(null, '', '#' + (i + 1));
+    window.scrollTo(0, 0);
+  }
+
+  prev.addEventListener('click', function(){ go(i - 1); });
+  next.addEventListener('click', function(){ go(i + 1); });
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown'){ go(i + 1); e.preventDefault(); }
+    if (e.key === 'ArrowLeft'  || e.key === 'PageUp'){ go(i - 1); e.preventDefault(); }
+  });
+
+  var sx = null;
+  document.addEventListener('touchstart', function(e){ sx = e.touches[0].clientX; }, {passive:true});
+  document.addEventListener('touchend', function(e){
+    if (sx === null) return;
+    var dx = e.changedTouches[0].clientX - sx; sx = null;
+    if (Math.abs(dx) > 60) go(i + (dx < 0 ? 1 : -1));
+  }, {passive:true});
+
+  var root = document.documentElement;
+  document.getElementById('theme').addEventListener('click', function(){
+    var isDark = root.getAttribute('data-theme') === 'dark'
+      || (!root.getAttribute('data-theme') && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    root.setAttribute('data-theme', isDark ? 'light' : 'dark');
+  });
+
+  var h = parseInt((location.hash || '').replace('#',''), 10);
+  go(isNaN(h) ? 0 : h - 1);
+})();
+</script>
+</body>
+</html>
